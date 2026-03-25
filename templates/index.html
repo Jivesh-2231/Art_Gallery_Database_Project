@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="text-center">
+  <h1>Welcome to the Art Gallery</h1>
+  <p class="lead">Explore artists, artworks, categories, customers, and purchases.</p>
+  <div class="row mt-4 g-3 justify-content-center">
+    <div class="col-md-2"><a class="btn btn-primary w-100" href="{{ url_for('artists') }}">Artists</a></div>
+    <div class="col-md-2"><a class="btn btn-primary w-100" href="{{ url_for('artworks') }}">Artworks</a></div>
+    <div class="col-md-2"><a class="btn btn-primary w-100" href="{{ url_for('categories') }}">Categories</a></div>
+    <div class="col-md-2"><a class="btn btn-primary w-100" href="{{ url_for('customers') }}">Customers</a></div>
+    <div class="col-md-2"><a class="btn btn-primary w-100" href="{{ url_for('purchases') }}">Purchases</a></div>
+  </div>
+</div>
+{% endblock %}

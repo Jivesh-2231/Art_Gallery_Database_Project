@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>Artists</h2>
+</div>
+<div class="card p-3 mb-4">
+  <form method="post" action="{{ url_for('add_artist') }}" class="row g-2">
+    <div class="col-md-2"><input class="form-control" name="name" placeholder="Name" required></div>
+    <div class="col-md-2"><input class="form-control" name="birthplace" placeholder="Birthplace" required></div>
+    <div class="col-md-1"><input type="number" class="form-control" name="age" placeholder="Age" required></div>
+    <div class="col-md-2"><input class="form-control" name="style" placeholder="Style" required></div>
+    <div class="col-md-1"><input type="number" class="form-control" name="artist_id" placeholder="ID" required></div>
+    <div class="col-md-2"><button class="btn btn-success w-100" type="submit">Add Artist</button></div>
+  </form>
+</div>
+<div class="table-responsive card p-3">
+  <table class="table table-hover align-middle">
+    <thead><tr><th>ID</th><th>Name</th><th>Birthplace</th><th>Age</th><th>Style</th><th>Actions</th></tr></thead>
+    <tbody>{% for artist in artists %}
+      <tr><td>{{ artist.artist_id }}</td><td>{{ artist.name }}</td><td>{{ artist.birthplace }}</td><td>{{ artist.age }}</td><td>{{ artist.style }}</td>
+      <td><a class="btn btn-danger btn-sm" href="{{ url_for('delete_artist', artist_id=artist.artist_id) }}">Delete</a></td></tr>
+    {% else %}<tr><td colspan="6">No artists found.</td></tr>{% endfor %}</tbody>
+  </table>
+</div>
+{% endblock %}

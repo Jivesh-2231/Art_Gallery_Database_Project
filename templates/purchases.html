@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-3"><h2>Purchases</h2></div>
+<div class="card p-3 mb-4"><form method="post" action="{{ url_for('add_purchase') }}" class="row g-2">
+    <div class="col-md-1"><input type="number" class="form-control" name="purchase_id" placeholder="ID" required></div>
+    <div class="col-md-2"><input type="number" class="form-control" name="customer_id" placeholder="Customer ID" required></div>
+    <div class="col-md-2"><input type="number" class="form-control" name="artwork_id" placeholder="Artwork ID" required></div>
+    <div class="col-md-2"><button class="btn btn-success w-100" type="submit">Add Purchase</button></div>
+  </form></div>
+<div class="table-responsive card p-3"><table class="table table-hover align-middle"><thead><tr><th>ID</th><th>Customer ID</th><th>Artwork ID</th><th>Actions</th></tr></thead><tbody>
+    {% for purchase in purchases %}<tr><td>{{ purchase.purchase_id }}</td><td>{{ purchase.customer_id }}</td><td>{{ purchase.artwork_id }}</td><td><a class="btn btn-danger btn-sm" href="{{ url_for('delete_purchase', purchase_id=purchase.purchase_id) }}">Delete</a></td></tr>{% else %}<tr><td colspan="4">No purchases yet.</td></tr>{% endfor %}
+  </tbody></table></div>
+{% endblock %}

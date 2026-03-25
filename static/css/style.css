@@ -1,0 +1,47 @@
+:root {
+  --primary: #3f51b5;
+  --secondary: #ff4081;
+  --bg: #f2f5ff;
+  --card-bg: #ffffff;
+  --text: #29303f;
+}
+
+body {
+  background: linear-gradient(135deg, #f5f7ff, #e8edff);
+  color: var(--text);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar, .footer {
+  background: #2f3e7a;
+}
+
+.navbar-brand, .nav-link, .footer {
+  color: #fff !important;
+}
+
+.card {
+  border: none;
+  border-radius: .9rem;
+  box-shadow: 0 16px 32px rgba(31, 66, 123, 0.16);
+  background: var(--card-bg);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), #5a67d8);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #4561d4, #7582ec);
+}
+
+.table thead {
+  background: #e5ecff;
+}
+
+.footer {
+  text-align: center;
+  padding: 1rem;
+  color: #eaeffb;
+}
