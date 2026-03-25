@@ -1,14 +1,12 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="text-center">
-  <h1>Welcome to the Art Gallery</h1>
-  <p class="lead">Explore artists, artworks, categories, customers, and purchases.</p>
-  <div class="row mt-4 g-3 justify-content-center">
-    <div class="col-md-2"><a class="btn btn-primary w-100" href="{{ url_for('artists') }}">Artists</a></div>
-    <div class="col-md-2"><a class="btn btn-primary w-100" href="{{ url_for('artworks') }}">Artworks</a></div>
-    <div class="col-md-2"><a class="btn btn-primary w-100" href="{{ url_for('categories') }}">Categories</a></div>
-    <div class="col-md-2"><a class="btn btn-primary w-100" href="{{ url_for('customers') }}">Customers</a></div>
-    <div class="col-md-2"><a class="btn btn-primary w-100" href="{{ url_for('purchases') }}">Purchases</a></div>
-  </div>
+<div class="stats-bar">
+  <div class="artwork-count"><i class="fas fa-images"></i> Welcome to ArtSphere</div>
+  <div class="controls"><span>Use the nav links to manage data.</span></div>
+</div>
+<div class="gallery-grid">
+    <div class="art-card"><div class="art-title">Easy database management</div><div class="art-meta">Add/view/edit/delete artwork, artist, category, customer, purchase.</div></div>
+    <div class="art-card"><div class="art-title">Aesthetic UI</div><div class="art-meta">Design uses simple typographic cards and clean colors.</div></div>
+    <div class="art-card"><div class="art-title">MySQL backend</div><div class="art-meta">Connected to your local MySQL (art_gallery schema).</div></div>
 </div>
 {% endblock %}

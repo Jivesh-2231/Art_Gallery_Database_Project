@@ -1,16 +1,36 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="d-flex justify-content-between align-items-center mb-3"><h2>Artworks</h2></div>
-<div class="card p-3 mb-4"><form method="post" action="{{ url_for('add_artwork') }}" class="row g-2">
-    <div class="col-md-2"><input class="form-control" name="title" placeholder="Title" required></div>
-    <div class="col-md-1"><input type="number" class="form-control" name="year" placeholder="Year" required></div>
-    <div class="col-md-1"><input class="form-control" name="type" placeholder="Type" required></div>
-    <div class="col-md-2"><input type="number" step="0.01" class="form-control" name="price" placeholder="Price" required></div>
-    <div class="col-md-1"><input type="number" class="form-control" name="artist_id" placeholder="Artist ID" required></div>
-    <div class="col-md-1"><input type="number" class="form-control" name="artwork_id" placeholder="ID" required></div>
-    <div class="col-md-2"><button class="btn btn-success w-100" type="submit">Add Artwork</button></div>
-  </form></div>
-<div class="table-responsive card p-3"><table class="table table-hover align-middle"><thead><tr><th>ID</th><th>Title</th><th>Year</th><th>Type</th><th>Price</th><th>Artist ID</th><th>Actions</th></tr></thead><tbody>
-    {% for art in artworks %}<tr><td>{{ art.artwork_id }}</td><td>{{ art.title }}</td><td>{{ art.year }}</td><td>{{ art.type }}</td><td>${{ '%.2f'|format(art.price) }}</td><td>{{ art.artist_id }}</td><td><a class="btn btn-danger btn-sm" href="{{ url_for('delete_artwork', artwork_id=art.artwork_id) }}">Delete</a></td></tr>{% else %}<tr><td colspan="7">No artworks found.</td></tr>{% endfor %}
-  </tbody></table></div>
+<div class="stats-bar">
+  <div class="artwork-count"><i class="fas fa-images"></i> {{ artworks|length }} artworks in your gallery</div>
+  <div class="controls"><span style="color:#6f4f3a;">Add a new piece and watch it appear below.</span></div>
+</div>
+<div class="form-panel">
+  <div class="form-title"><i class="fas fa-plus-circle"></i> Add New Artwork</div>
+  <form method="post" action="{{ url_for('add_artwork') }}" class="form-grid">
+    <div class="input-group"><label>Title *</label><input name="title" placeholder="Title" required></div>
+    <div class="input-group"><label>Year *</label><input type="number" name="year" placeholder="Year" required></div>
+    <div class="input-group"><label>Type *</label><input name="type" placeholder="Type" required></div>
+    <div class="input-group"><label>Price *</label><input type="number" step="0.01" name="price" placeholder="Price" required></div>
+    <div class="input-group"><label>Artist ID *</label><input type="number" name="artist_id" placeholder="Artist ID" required></div>
+    <div class="input-group"><label>Artwork ID *</label><input type="number" name="artwork_id" placeholder="ID" required></div>
+    <div class="form-actions"><button class="btn-primary" type="submit"><i class="fas fa-save"></i> Save</button></div>
+  </form>
+</div>
+
+<div class="gallery-grid">
+  {% if artworks %}
+    {% for art in artworks %}
+      <div class="art-card">
+        <div class="art-title">{{ art.title }}</div>
+        <div class="art-meta"><i class="fas fa-user"></i> Artist ID: {{ art.artist_id }}</div>
+        <div class="art-meta"><i class="fas fa-calendar-alt"></i> Year: {{ art.year }}</div>
+        <div class="art-meta"><i class="fas fa-tag"></i> Type: {{ art.type }}</div>
+        <div class="art-meta"><i class="fas fa-dollar-sign"></i> Price: ${{ '%.2f'|format(art.price) }}</div>
+        <div class="card-actions"><a class="delete-btn" href="{{ url_for('delete_artwork', artwork_id=art.artwork_id) }}"><i class="fas fa-trash-alt"></i></a></div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-state">No artworks found. Add your first artwork above.</div>
+  {% endif %}
+</div>
 {% endblock %}
