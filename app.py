@@ -15,6 +15,7 @@ class Artist(db.Model):
     birthplace = db.Column(db.String(100), nullable=False)
     age = db.Column(db.Integer, nullable=False)
     style = db.Column(db.String(100), nullable=False)
+    artworks = db.relationship('Artwork', backref='artist', lazy=True, cascade='all, delete-orphan')
 
 class Artwork(db.Model):
     __tablename__ = 'artwork'
@@ -23,7 +24,8 @@ class Artwork(db.Model):
     year = db.Column(db.Integer, nullable=False)
     type = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
-    artist_id = db.Column(db.Integer, db.ForeignKey('artist.artist_id'), nullable=False)
+    artist_id = db.Column(db.Integer, db.ForeignKey('artist.artist_id', ondelete='CASCADE'), nullable=False)
+    purchases = db.relationship('Purchase', backref='artwork', lazy=True, cascade='all, delete-orphan')
 
 class Category(db.Model):
     __tablename__ = 'category'
@@ -37,12 +39,13 @@ class Customer(db.Model):
     address = db.Column(db.String(100), nullable=False)
     total_spent = db.Column(db.Float, nullable=False)
     liking = db.Column(db.String(100), nullable=False)
+    purchases = db.relationship('Purchase', backref='customer', lazy=True, cascade='all, delete-orphan')
 
 class Purchase(db.Model):
     __tablename__ = 'purchase'
     purchase_id = db.Column(db.Integer, primary_key=True)
-    customer_id = db.Column(db.Integer, db.ForeignKey('customer.customer_id'), nullable=False)
-    artwork_id = db.Column(db.Integer, db.ForeignKey('artwork.artwork_id'), nullable=False)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customer.customer_id', ondelete='CASCADE'), nullable=False)
+    artwork_id = db.Column(db.Integer, db.ForeignKey('artwork.artwork_id', ondelete='CASCADE'), nullable=False)
 
 @app.context_processor
 def inject_current_year():
@@ -78,13 +81,17 @@ def add_artist():
 
 @app.route('/artists/delete/<int:artist_id>')
 def delete_artist(artist_id):
-    obj = Artist.query.get(artist_id)
-    if obj:
-        db.session.delete(obj)
-        db.session.commit()
-        flash('Artist deleted', 'success')
-    else:
-        flash('Artist not found', 'warning')
+    try:
+        obj = Artist.query.get(artist_id)
+        if obj:
+            db.session.delete(obj)
+            db.session.commit()
+            flash('Artist deleted successfully!', 'success')
+        else:
+            flash('Artist not found', 'warning')
+    except Exception as e:
+        db.session.rollback()
+        flash('Error deleting artist: ' + str(e), 'danger')
     return redirect(url_for('artists'))
 
 # Artwork
@@ -114,13 +121,17 @@ def add_artwork():
 
 @app.route('/artworks/delete/<int:artwork_id>')
 def delete_artwork(artwork_id):
-    obj = Artwork.query.get(artwork_id)
-    if obj:
-        db.session.delete(obj)
-        db.session.commit()
-        flash('Artwork deleted', 'success')
-    else:
-        flash('Artwork not found', 'warning')
+    try:
+        obj = Artwork.query.get(artwork_id)
+        if obj:
+            db.session.delete(obj)
+            db.session.commit()
+            flash('Artwork deleted successfully!', 'success')
+        else:
+            flash('Artwork not found', 'warning')
+    except Exception as e:
+        db.session.rollback()
+        flash('Error deleting artwork: ' + str(e), 'danger')
     return redirect(url_for('artworks'))
 
 # Category
@@ -146,13 +157,17 @@ def add_category():
 
 @app.route('/categories/delete/<int:category_id>')
 def delete_category(category_id):
-    obj = Category.query.get(category_id)
-    if obj:
-        db.session.delete(obj)
-        db.session.commit()
-        flash('Category deleted', 'success')
-    else:
-        flash('Category not found', 'warning')
+    try:
+        obj = Category.query.get(category_id)
+        if obj:
+            db.session.delete(obj)
+            db.session.commit()
+            flash('Category deleted successfully!', 'success')
+        else:
+            flash('Category not found', 'warning')
+    except Exception as e:
+        db.session.rollback()
+        flash('Error deleting category: ' + str(e), 'danger')
     return redirect(url_for('categories'))
 
 # Customer
@@ -181,13 +196,17 @@ def add_customer():
 
 @app.route('/customers/delete/<int:customer_id>')
 def delete_customer(customer_id):
-    obj = Customer.query.get(customer_id)
-    if obj:
-        db.session.delete(obj)
-        db.session.commit()
-        flash('Customer deleted', 'success')
-    else:
-        flash('Customer not found', 'warning')
+    try:
+        obj = Customer.query.get(customer_id)
+        if obj:
+            db.session.delete(obj)
+            db.session.commit()
+            flash('Customer deleted successfully!', 'success')
+        else:
+            flash('Customer not found', 'warning')
+    except Exception as e:
+        db.session.rollback()
+        flash('Error deleting customer: ' + str(e), 'danger')
     return redirect(url_for('customers'))
 
 # Purchase
@@ -214,13 +233,17 @@ def add_purchase():
 
 @app.route('/purchases/delete/<int:purchase_id>')
 def delete_purchase(purchase_id):
-    obj = Purchase.query.get(purchase_id)
-    if obj:
-        db.session.delete(obj)
-        db.session.commit()
-        flash('Purchase deleted', 'success')
-    else:
-        flash('Purchase not found', 'warning')
+    try:
+        obj = Purchase.query.get(purchase_id)
+        if obj:
+            db.session.delete(obj)
+            db.session.commit()
+            flash('Purchase deleted successfully!', 'success')
+        else:
+            flash('Purchase not found', 'warning')
+    except Exception as e:
+        db.session.rollback()
+        flash('Error deleting purchase: ' + str(e), 'danger')
     return redirect(url_for('purchases'))
 
 if __name__ == '__main__':

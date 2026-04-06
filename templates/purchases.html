@@ -1,13 +1,78 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="d-flex justify-content-between align-items-center mb-3"><h2>Purchases</h2></div>
-<div class="card p-3 mb-4"><form method="post" action="{{ url_for('add_purchase') }}" class="row g-2">
-    <div class="col-md-1"><input type="number" class="form-control" name="purchase_id" placeholder="ID" required></div>
-    <div class="col-md-2"><input type="number" class="form-control" name="customer_id" placeholder="Customer ID" required></div>
-    <div class="col-md-2"><input type="number" class="form-control" name="artwork_id" placeholder="Artwork ID" required></div>
-    <div class="col-md-2"><button class="btn btn-success w-100" type="submit">Add Purchase</button></div>
-  </form></div>
-<div class="table-responsive card p-3"><table class="table table-hover align-middle"><thead><tr><th>ID</th><th>Customer ID</th><th>Artwork ID</th><th>Actions</th></tr></thead><tbody>
-    {% for purchase in purchases %}<tr><td>{{ purchase.purchase_id }}</td><td>{{ purchase.customer_id }}</td><td>{{ purchase.artwork_id }}</td><td><a class="btn btn-danger btn-sm" href="{{ url_for('delete_purchase', purchase_id=purchase.purchase_id) }}">Delete</a></td></tr>{% else %}<tr><td colspan="4">No purchases yet.</td></tr>{% endfor %}
-  </tbody></table></div>
+<div style="margin-bottom: 2rem;">
+  <h2 class="section-title">Purchase Records</h2>
+  <p class="section-subtitle">Track all art sales and customer purchases</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-badge"><i class="fas fa-shopping-cart"></i> Total Purchases: <strong>{{ purchases|length }}</strong></div>
+</div>
+
+<div class="form-panel">
+  <div class="form-title"><i class="fas fa-receipt"></i> Record New Purchase</div>
+  <form method="post" action="{{ url_for('add_purchase') }}" class="form-grid">
+    <div class="input-group">
+      <label>Purchase ID *</label>
+      <input type="number" name="purchase_id" placeholder="e.g., 1" required>
+    </div>
+    <div class="input-group">
+      <label>Customer ID *</label>
+      <input type="number" name="customer_id" placeholder="e.g., 5" required>
+    </div>
+    <div class="input-group">
+      <label>Artwork ID *</label>
+      <input type="number" name="artwork_id" placeholder="e.g., 12" required>
+    </div>
+    <div style="grid-column: 1 / -1;">
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i> Record Purchase</button>
+        <button class="btn btn-secondary" type="reset"><i class="fas fa-redo"></i> Clear</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div style="margin-bottom: 2rem;">
+  <h3 style="color: var(--text); margin-bottom: 1rem; font-size: 1.3rem;"><i class="fas fa-filter"></i> Filter & Search</h3>
+  <div class="filter-block">
+    <div class="search-box" style="flex: 1;">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchPurchase" placeholder="Search by Customer ID or Artwork ID...">
+    </div>
+  </div>
+</div>
+
+<div class="gallery-grid" id="purchasesGrid">
+  {% if purchases %}
+    {% for purchase in purchases %}
+      <div class="art-card" data-customer="{{ purchase.customer_id }}" data-artwork="{{ purchase.artwork_id }}">
+        <div style="font-size: 2.5rem; color: var(--warning); margin-bottom: 1rem; text-align: center;">
+          <i class="fas fa-shopping-bag"></i>
+        </div>
+        <div class="art-title">Purchase #{{ purchase.purchase_id }}</div>
+        <div class="art-meta"><i class="fas fa-user"></i> <strong>Customer ID:</strong> {{ purchase.customer_id }}</div>
+        <div class="art-meta"><i class="fas fa-image"></i> <strong>Artwork ID:</strong> {{ purchase.artwork_id }}</div>
+        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+          <div class="card-actions">
+            <a href="{{ url_for('delete_purchase', purchase_id=purchase.purchase_id) }}" class="btn btn-danger" style="width: 100%;" onclick="return confirm('Delete this purchase record?');"><i class="fas fa-trash-alt"></i> Remove</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-state" style="grid-column: 1 / -1;"><i class="fas fa-inbox"></i> No purchases yet. Record your first sale above!</div>
+  {% endif %}
+</div>
+
+<script>
+document.getElementById('searchPurchase')?.addEventListener('input', function(e) {
+  const searchTerm = e.target.value.toLowerCase();
+  document.querySelectorAll('.art-card').forEach(card => {
+    const matches = card.dataset.customer?.includes(searchTerm) ||
+                   card.dataset.artwork?.includes(searchTerm);
+    card.style.display = matches ? '' : 'none';
+  });
+});
+</script>
 {% endblock %}

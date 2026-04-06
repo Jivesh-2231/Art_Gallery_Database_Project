@@ -1,12 +1,95 @@
 {% extends "layout.html" %}
 {% block body %}
 <div class="stats-bar">
-  <div class="artwork-count"><i class="fas fa-images"></i> Welcome to ArtSphere</div>
-  <div class="controls"><span>Use the nav links to manage data.</span></div>
+  <div class="stat-badge"><i class="fas fa-welcome"></i> Welcome to ArtSphere</div>
+  <div class="stat-badge"><i class="fas fa-database"></i> Art Gallery Management System</div>
 </div>
+
+<div style="margin-bottom: 3rem;">
+  <h2 class="section-title">Dashboard</h2>
+  <p class="section-subtitle">Manage your entire art gallery from one place</p>
+</div>
+
 <div class="gallery-grid">
-    <div class="art-card"><div class="art-title">Easy database management</div><div class="art-meta">Add/view/edit/delete artwork, artist, category, customer, purchase.</div></div>
-    <div class="art-card"><div class="art-title">Aesthetic UI</div><div class="art-meta">Design uses simple typographic cards and clean colors.</div></div>
-    <div class="art-card"><div class="art-title">MySQL backend</div><div class="art-meta">Connected to your local MySQL (art_gallery schema).</div></div>
+  <div class="art-card">
+    <div style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; text-align: center;">
+      <i class="fas fa-image"></i>
+    </div>
+    <div class="art-title">Artworks</div>
+    <div class="art-meta">Browse, add, and manage all artworks in your collection</div>
+    <div class="card-actions" style="margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border);">
+      <a href="{{ url_for('artworks') }}" class="btn btn-primary" style="width: 100%; justify-content: center;">
+        <i class="fas fa-arrow-right"></i> Manage Artworks
+      </a>
+    </div>
+  </div>
+
+  <div class="art-card">
+    <div style="font-size: 2.5rem; color: var(--secondary); margin-bottom: 1rem; text-align: center;">
+      <i class="fas fa-palette"></i>
+    </div>
+    <div class="art-title">Artists</div>
+    <div class="art-meta">Track artists, their styles, and biographical information</div>
+    <div class="card-actions" style="margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border);">
+      <a href="{{ url_for('artists') }}" class="btn btn-primary" style="width: 100%; justify-content: center;">
+        <i class="fas fa-arrow-right"></i> View Artists
+      </a>
+    </div>
+  </div>
+
+  <div class="art-card">
+    <div style="font-size: 2.5rem; color: var(--accent); margin-bottom: 1rem; text-align: center;">
+      <i class="fas fa-list"></i>
+    </div>
+    <div class="art-title">Categories</div>
+    <div class="art-meta">Organize artworks by categories for better curation</div>
+    <div class="card-actions" style="margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border);">
+      <a href="{{ url_for('categories') }}" class="btn btn-primary" style="width: 100%; justify-content: center;">
+        <i class="fas fa-arrow-right"></i> Browse Categories
+      </a>
+    </div>
+  </div>
+
+  <div class="art-card">
+    <div style="font-size: 2.5rem; color: var(--success); margin-bottom: 1rem; text-align: center;">
+      <i class="fas fa-user-tie"></i>
+    </div>
+    <div class="art-title">Customers</div>
+    <div class="art-meta">Manage customer profiles and their preferences</div>
+    <div class="card-actions" style="margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border);">
+      <a href="{{ url_for('customers') }}" class="btn btn-primary" style="width: 100%; justify-content: center;">
+        <i class="fas fa-arrow-right"></i> Manage Customers
+      </a>
+    </div>
+  </div>
+
+  <div class="art-card">
+    <div style="font-size: 2.5rem; color: var(--warning); margin-bottom: 1rem; text-align: center;">
+      <i class="fas fa-shopping-cart"></i>
+    </div>
+    <div class="art-title">Purchases</div>
+    <div class="art-meta">Track sales and customer purchase history</div>
+    <div class="card-actions" style="margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border);">
+      <a href="{{ url_for('purchases') }}" class="btn btn-primary" style="width: 100%; justify-content: center;">
+        <i class="fas fa-arrow-right"></i> View Purchases
+      </a>
+    </div>
+  </div>
+
+  <div class="art-card">
+    <div style="font-size: 2.5rem; color: var(--info); margin-bottom: 1rem; text-align: center;">
+      <i class="fas fa-database"></i>
+    </div>
+    <div class="art-title">MySQL Backend</div>
+    <div class="art-meta">Powered by a robust MySQL database for reliable data management</div>
+    <div class="card-actions" style="margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border);">
+      <span style="color: var(--text-muted); font-size: 0.9rem;">art_gallery schema</span>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top: 3rem; padding: 2rem; background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); border-radius: 1rem; border-left: 4px solid var(--primary);">
+  <h3 style="color: var(--text); margin-bottom: 0.5rem;">✨ Get Started</h3>
+  <p style="color: var(--text-muted);">Use the navigation menu above to access different sections. Each section allows you to view, add, and manage your data efficiently.</p>
 </div>
 {% endblock %}

@@ -1,12 +1,72 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="d-flex justify-content-between align-items-center mb-3"><h2>Categories</h2></div>
-<div class="card p-3 mb-4"><form method="post" action="{{ url_for('add_category') }}" class="row g-2">
-    <div class="col-md-3"><input type="number" class="form-control" name="category_id" placeholder="ID" required></div>
-    <div class="col-md-6"><input class="form-control" name="category_name" placeholder="Category Name" required></div>
-    <div class="col-md-2"><button class="btn btn-success w-100" type="submit">Add Category</button></div>
-  </form></div>
-<div class="table-responsive card p-3"><table class="table table-hover align-middle"><thead><tr><th>ID</th><th>Name</th><th>Actions</th></tr></thead><tbody>
-    {% for category in categories %}<tr><td>{{ category.category_id }}</td><td>{{ category.category_name }}</td><td><a class="btn btn-danger btn-sm" href="{{ url_for('delete_category', category_id=category.category_id) }}">Delete</a></td></tr>{% else %}<tr><td colspan="3">No categories yet.</td></tr>{% endfor %}
-  </tbody></table></div>
+<div style="margin-bottom: 2rem;">
+  <h2 class="section-title">Art Categories</h2>
+  <p class="section-subtitle">Organize and manage artwork categories for better curation</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-badge"><i class="fas fa-list"></i> Total Categories: <strong>{{ categories|length }}</strong></div>
+</div>
+
+<div class="form-panel">
+  <div class="form-title"><i class="fas fa-folder-plus"></i> Create New Category</div>
+  <form method="post" action="{{ url_for('add_category') }}" class="form-grid">
+    <div class="input-group">
+      <label>Category ID *</label>
+      <input type="number" name="category_id" placeholder="e.g., 1" required>
+    </div>
+    <div class="input-group">
+      <label>Category Name *</label>
+      <input name="category_name" placeholder="e.g., Modern Art" required>
+    </div>
+    <div style="grid-column: 1 / -1;">
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i> Create Category</button>
+        <button class="btn btn-secondary" type="reset"><i class="fas fa-redo"></i> Clear</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div style="margin-bottom: 2rem;">
+  <h3 style="color: var(--text); margin-bottom: 1rem; font-size: 1.3rem;"><i class="fas fa-filter"></i> Filter & Search</h3>
+  <div class="filter-block">
+    <div class="search-box" style="flex: 1;">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchCategory" placeholder="Search categories...">
+    </div>
+  </div>
+</div>
+
+<div class="gallery-grid" id="categoriesGrid">
+  {% if categories %}
+    {% for category in categories %}
+      <div class="art-card" data-category="{{ category.category_name|lower }}">
+        <div style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem; text-align: center;">
+          <i class="fas fa-folder"></i>
+        </div>
+        <div class="art-title">{{ category.category_name }}</div>
+        <div class="art-meta"><strong>ID:</strong> {{ category.category_id }}</div>
+        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+          <div class="card-actions">
+            <a href="{{ url_for('delete_category', category_id=category.category_id) }}" class="btn btn-danger" style="width: 100%;" onclick="return confirm('Delete this category?');"><i class="fas fa-trash-alt"></i> Delete</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-state" style="grid-column: 1 / -1;"><i class="fas fa-inbox"></i> No categories yet. Create your first category above!</div>
+  {% endif %}
+</div>
+
+<script>
+document.getElementById('searchCategory')?.addEventListener('input', function(e) {
+  const searchTerm = e.target.value.toLowerCase();
+  document.querySelectorAll('.art-card').forEach(card => {
+    const matches = card.dataset.category?.includes(searchTerm);
+    card.style.display = matches ? '' : 'none';
+  });
+});
+</script>
 {% endblock %}

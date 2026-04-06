@@ -1,36 +1,116 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="stats-bar">
-  <div class="artwork-count"><i class="fas fa-images"></i> {{ artworks|length }} artworks in your gallery</div>
-  <div class="controls"><span style="color:#6f4f3a;">Add a new piece and watch it appear below.</span></div>
+<div style="margin-bottom: 2rem;">
+  <h2 class="section-title">Artworks Collection</h2>
+  <p class="section-subtitle">Manage and organize your gallery's masterpieces</p>
 </div>
+
+<div class="stats-bar">
+  <div class="stat-badge"><i class="fas fa-palette"></i> Total Artworks: <strong>{{ artworks|length }}</strong></div>
+</div>
+
 <div class="form-panel">
-  <div class="form-title"><i class="fas fa-plus-circle"></i> Add New Artwork</div>
+  <div class="form-title"><i class="fas fa-plus-circle"></i> Create New Artwork</div>
   <form method="post" action="{{ url_for('add_artwork') }}" class="form-grid">
-    <div class="input-group"><label>Title *</label><input name="title" placeholder="Title" required></div>
-    <div class="input-group"><label>Year *</label><input type="number" name="year" placeholder="Year" required></div>
-    <div class="input-group"><label>Type *</label><input name="type" placeholder="Type" required></div>
-    <div class="input-group"><label>Price *</label><input type="number" step="0.01" name="price" placeholder="Price" required></div>
-    <div class="input-group"><label>Artist ID *</label><input type="number" name="artist_id" placeholder="Artist ID" required></div>
-    <div class="input-group"><label>Artwork ID *</label><input type="number" name="artwork_id" placeholder="ID" required></div>
-    <div class="form-actions"><button class="btn-primary" type="submit"><i class="fas fa-save"></i> Save</button></div>
+    <div class="input-group">
+      <label>Artwork ID *</label>
+      <input type="number" name="artwork_id" placeholder="e.g., 1" required>
+    </div>
+    <div class="input-group">
+      <label>Title *</label>
+      <input name="title" placeholder="e.g., Starry Night" required>
+    </div>
+    <div class="input-group">
+      <label>Artist ID *</label>
+      <input type="number" name="artist_id" placeholder="e.g., 5" required>
+    </div>
+    <div class="input-group">
+      <label>Year *</label>
+      <input type="number" name="year" placeholder="e.g., 2023" required>
+    </div>
+    <div class="input-group">
+      <label>Type *</label>
+      <input name="type" placeholder="e.g., Oil Painting" required>
+    </div>
+    <div class="input-group">
+      <label>Price *</label>
+      <input type="number" step="0.01" name="price" placeholder="e.g., 1500.00" required>
+    </div>
+    <div style="grid-column: 1 / -1;">
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i> Save Artwork</button>
+        <button class="btn btn-secondary" type="reset"><i class="fas fa-redo"></i> Clear</button>
+      </div>
+    </div>
   </form>
 </div>
 
-<div class="gallery-grid">
+<div style="margin-bottom: 2rem;">
+  <h3 style="color: var(--text); margin-bottom: 1rem; font-size: 1.3rem;"><i class="fas fa-filter"></i> Filter & Search</h3>
+  <div class="filter-block">
+    <div class="search-box" style="flex: 1;">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchArtwork" placeholder="Search by title, artist ID, or type...">
+    </div>
+    <select id="sortArtwork">
+      <option value="">Sort by...</option>
+      <option value="year-asc">Year (Oldest First)</option>
+      <option value="year-desc">Year (Newest First)</option>
+      <option value="price-asc">Price (Low to High)</option>
+      <option value="price-desc">Price (High to Low)</option>
+    </select>
+  </div>
+</div>
+
+<div class="gallery-grid" id="artworksGrid">
   {% if artworks %}
     {% for art in artworks %}
-      <div class="art-card">
+      <div class="art-card" data-title="{{ art.title|lower }}" data-type="{{ art.type|lower }}" data-artist="{{ art.artist_id }}" data-year="{{ art.year }}" data-price="{{ art.price }}">
         <div class="art-title">{{ art.title }}</div>
-        <div class="art-meta"><i class="fas fa-user"></i> Artist ID: {{ art.artist_id }}</div>
-        <div class="art-meta"><i class="fas fa-calendar-alt"></i> Year: {{ art.year }}</div>
-        <div class="art-meta"><i class="fas fa-tag"></i> Type: {{ art.type }}</div>
-        <div class="art-meta"><i class="fas fa-dollar-sign"></i> Price: ${{ '%.2f'|format(art.price) }}</div>
-        <div class="card-actions"><a class="delete-btn" href="{{ url_for('delete_artwork', artwork_id=art.artwork_id) }}"><i class="fas fa-trash-alt"></i></a></div>
+        <div class="art-meta"><i class="fas fa-palette"></i> <strong>Type:</strong> {{ art.type }}</div>
+        <div class="art-meta"><i class="fas fa-user"></i> <strong>Artist ID:</strong> {{ art.artist_id }}</div>
+        <div class="art-meta"><i class="fas fa-calendar-alt"></i> <strong>Year:</strong> {{ art.year }}</div>
+        <div class="art-meta"><i class="fas fa-dollar-sign"></i> <strong>Price:</strong> ${{ '%.2f'|format(art.price) }}</div>
+        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+          <div class="card-actions">
+            <a href="{{ url_for('delete_artwork', artwork_id=art.artwork_id) }}" class="btn btn-danger" onclick="return confirm('Delete this artwork?');">
+              <i class="fas fa-trash-alt"></i> Delete
+            </a>
+          </div>
+        </div>
       </div>
     {% endfor %}
   {% else %}
-    <div class="empty-state">No artworks found. Add your first artwork above.</div>
+    <div class="empty-state"><i class="fas fa-inbox"></i> No artworks yet. Add your first masterpiece above!</div>
   {% endif %}
 </div>
+
+<script>
+document.getElementById('searchArtwork')?.addEventListener('input', function(e) {
+  const searchTerm = e.target.value.toLowerCase();
+  document.querySelectorAll('.art-card').forEach(card => {
+    const matches = card.dataset.title.includes(searchTerm) || 
+                   card.dataset.type.includes(searchTerm) ||
+                   card.dataset.artist.includes(searchTerm);
+    card.style.display = matches ? '' : 'none';
+  });
+});
+
+document.getElementById('sortArtwork')?.addEventListener('change', function(e) {
+  const grid = document.getElementById('artworksGrid');
+  const cards = Array.from(document.querySelectorAll('.art-card'));
+  
+  if (e.target.value === 'year-asc') {
+    cards.sort((a, b) => parseInt(a.dataset.year) - parseInt(b.dataset.year));
+  } else if (e.target.value === 'year-desc') {
+    cards.sort((a, b) => parseInt(b.dataset.year) - parseInt(a.dataset.year));
+  } else if (e.target.value === 'price-asc') {
+    cards.sort((a, b) => parseFloat(a.dataset.price) - parseFloat(b.dataset.price));
+  } else if (e.target.value === 'price-desc') {
+    cards.sort((a, b) => parseFloat(b.dataset.price) - parseFloat(a.dataset.price));
+  }
+  
+  cards.forEach(card => grid.appendChild(card));
+});
+</script>
 {% endblock %}

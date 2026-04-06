@@ -1,25 +1,128 @@
 {% extends "layout.html" %}
 {% block body %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h2>Artists</h2>
+<div style="margin-bottom: 2rem;">
+  <h2 class="section-title">Artists Directory</h2>
+  <p class="section-subtitle">Manage and showcase your gallery's talented artists</p>
 </div>
-<div class="card p-3 mb-4">
-  <form method="post" action="{{ url_for('add_artist') }}" class="row g-2">
-    <div class="col-md-2"><input class="form-control" name="name" placeholder="Name" required></div>
-    <div class="col-md-2"><input class="form-control" name="birthplace" placeholder="Birthplace" required></div>
-    <div class="col-md-1"><input type="number" class="form-control" name="age" placeholder="Age" required></div>
-    <div class="col-md-2"><input class="form-control" name="style" placeholder="Style" required></div>
-    <div class="col-md-1"><input type="number" class="form-control" name="artist_id" placeholder="ID" required></div>
-    <div class="col-md-2"><button class="btn btn-success w-100" type="submit">Add Artist</button></div>
+
+<div class="stats-bar">
+  <div class="stat-badge"><i class="fas fa-users"></i> Total Artists: <strong>{{ artists|length }}</strong></div>
+</div>
+
+<div class="form-panel">
+  <div class="form-title"><i class="fas fa-user-plus"></i> Register New Artist</div>
+  <form method="post" action="{{ url_for('add_artist') }}" class="form-grid">
+    <div class="input-group">
+      <label>Artist ID *</label>
+      <input type="number" name="artist_id" placeholder="e.g., 1" required>
+    </div>
+    <div class="input-group">
+      <label>Name *</label>
+      <input name="name" placeholder="Full name" required>
+    </div>
+    <div class="input-group">
+      <label>Birthplace *</label>
+      <input name="birthplace" placeholder="e.g., Paris, France" required>
+    </div>
+    <div class="input-group">
+      <label>Age *</label>
+      <input type="number" name="age" placeholder="e.g., 35" required>
+    </div>
+    <div class="input-group">
+      <label>Artistic Style *</label>
+      <input name="style" placeholder="e.g., Impressionism" required>
+    </div>
+    <div style="grid-column: 1 / -1;">
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i> Add Artist</button>
+        <button class="btn btn-secondary" type="reset"><i class="fas fa-redo"></i> Clear</button>
+      </div>
+    </div>
   </form>
 </div>
-<div class="table-responsive card p-3">
-  <table class="table table-hover align-middle">
-    <thead><tr><th>ID</th><th>Name</th><th>Birthplace</th><th>Age</th><th>Style</th><th>Actions</th></tr></thead>
-    <tbody>{% for artist in artists %}
-      <tr><td>{{ artist.artist_id }}</td><td>{{ artist.name }}</td><td>{{ artist.birthplace }}</td><td>{{ artist.age }}</td><td>{{ artist.style }}</td>
-      <td><a class="btn btn-danger btn-sm" href="{{ url_for('delete_artist', artist_id=artist.artist_id) }}">Delete</a></td></tr>
-    {% else %}<tr><td colspan="6">No artists found.</td></tr>{% endfor %}</tbody>
+
+<div style="margin-bottom: 2rem;">
+  <h3 style="color: var(--text); margin-bottom: 1rem; font-size: 1.3rem;"><i class="fas fa-filter"></i> Filter & Search</h3>
+  <div class="filter-block">
+    <div class="search-box" style="flex: 1;">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchArtist" placeholder="Search by name, birthplace, or style...">
+    </div>
+    <select id="sortArtist">
+      <option value="">Sort by...</option>
+      <option value="name-asc">Name (A-Z)</option>
+      <option value="name-desc">Name (Z-A)</option>
+      <option value="age-asc">Age (Youngest)</option>
+      <option value="age-desc">Age (Oldest)</option>
+    </select>
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table>
+    <thead>
+      <tr>
+        <th><i class="fas fa-hashtag"></i> ID</th>
+        <th><i class="fas fa-user"></i> Name</th>
+        <th><i class="fas fa-map-marker-alt"></i> Birthplace</th>
+        <th><i class="fas fa-birthday-cake"></i> Age</th>
+        <th><i class="fas fa-palette"></i> Style</th>
+        <th><i class="fas fa-cogs"></i> Actions</th>
+      </tr>
+    </thead>
+    <tbody id="artistsTableBody">
+      {% if artists %}
+        {% for artist in artists %}
+          <tr data-name="{{ artist.name|lower }}" data-birthplace="{{ artist.birthplace|lower }}" data-style="{{ artist.style|lower }}" data-age="{{ artist.age }}">
+            <td><span style="background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-weight: 600;">{{ artist.artist_id }}</span></td>
+            <td><strong>{{ artist.name }}</strong></td>
+            <td>{{ artist.birthplace }}</td>
+            <td><span style="background: var(--bg-lighter); padding: 0.5rem 0.75rem; border-radius: 0.5rem;">{{ artist.age }} years</span></td>
+            <td><span style="background: #f3e8ff; color: #7c3aed; padding: 0.5rem 0.75rem; border-radius: 0.5rem; font-weight: 500;">{{ artist.style }}</span></td>
+            <td>
+              <div style="display: flex; gap: 0.5rem;">
+                <a href="{{ url_for('delete_artist', artist_id=artist.artist_id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Delete artist and all related data?');"><i class="fas fa-trash-alt"></i> Delete</a>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+            <i class="fas fa-inbox"></i> No artists yet. Register your first artist above!
+          </td>
+        </tr>
+      {% endif %}
+    </tbody>
   </table>
 </div>
+
+<script>
+document.getElementById('searchArtist')?.addEventListener('input', function(e) {
+  const searchTerm = e.target.value.toLowerCase();
+  document.querySelectorAll('#artistsTableBody tr').forEach(row => {
+    const matches = row.dataset.name?.includes(searchTerm) || 
+                   row.dataset.birthplace?.includes(searchTerm) ||
+                   row.dataset.style?.includes(searchTerm);
+    row.style.display = matches ? '' : 'none';
+  });
+});
+
+document.getElementById('sortArtist')?.addEventListener('change', function(e) {
+  const tbody = document.getElementById('artistsTableBody');
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  
+  if (e.target.value === 'name-asc') {
+    rows.sort((a, b) => a.dataset.name?.localeCompare(b.dataset.name));
+  } else if (e.target.value === 'name-desc') {
+    rows.sort((a, b) => b.dataset.name?.localeCompare(a.dataset.name));
+  } else if (e.target.value === 'age-asc') {
+    rows.sort((a, b) => parseInt(a.dataset.age) - parseInt(b.dataset.age));
+  } else if (e.target.value === 'age-desc') {
+    rows.sort((a, b) => parseInt(b.dataset.age) - parseInt(a.dataset.age));
+  }
+  
+  rows.forEach(row => tbody.appendChild(row));
+});
+</script>
 {% endblock %}

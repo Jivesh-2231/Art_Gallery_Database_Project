@@ -16,9 +16,9 @@ CREATE TABLE artwork (
     title VARCHAR(100),
     year INT,
     type VARCHAR(100),
-    price FLOAT,    mysql -u root -p < "c:\Users\Alenj\OneDrive\Desktop\Art-Gallery Project\database.sql"    mysql -u root -p < "c:\Users\Alenj\OneDrive\Desktop\Art-Gallery Project\database.sql"
+    price FLOAT,
     artist_id INT,
-    FOREIGN KEY (artist_id) REFERENCES artist(artist_id)
+    FOREIGN KEY (artist_id) REFERENCES artist(artist_id) ON DELETE CASCADE
 );
 
 -- CATEGORY TABLE
@@ -41,8 +41,8 @@ CREATE TABLE purchase (
     purchase_id INT PRIMARY KEY,
     customer_id INT,
     artwork_id INT,
-    FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
-    FOREIGN KEY (artwork_id) REFERENCES artwork(artwork_id)
+    FOREIGN KEY (customer_id) REFERENCES customer(customer_id) ON DELETE CASCADE,
+    FOREIGN KEY (artwork_id) REFERENCES artwork(artwork_id) ON DELETE CASCADE
 );
 
 -- =========================
